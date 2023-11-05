@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les petits plats</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="./assets/logo/Logo.png" alt="Logo les petits plats">
+        <h1>Cherchez parmi plus de 1500 recetes du quotidien, simples et délicieuses</h1>
+        <div class="searchBar">
+            <input type="text" id="mainSearchBar" placeholder="Rechercher une recette, un ingrédient, ..." >
+            <div class="searchImageContent">
+                <img src="./assets/images/CroceMainSearch.png" class="deleteText croix" alt="croix pour supprimer le texte">
+                <img src="./assets/images/searchIcon.png" alt="search Icon">
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="filtreContent">
+            <div class="filtre" id="ingredientFilter">
+                <div class="topFiltre">
+                    <p>Ingrédients</p>
+                    <img src="./assets/images/Vector 1.png" class="chevron" alt="Chevron Down">
+                </div>
+                <div class="filterOpen">
+                    <div class="searchFilter">
+                        <input type="text" id="ingredientSearch">
+                        <div class="searchImageContent">
+                            <img src="./assets/images/CroceFilter.png" class="deleteText croix" alt="croix pour supprimer le texte">
+                            <img src="./assets/images/search_Icon.svg" class="searchIcon" alt="search Icon">
+                        </div>
+                    </div>
+                    <div class="elementSelectContent"></div>
+                    <div class="elementList"></div>
+                </div>
+            </div>
+            
+
+            <div class="recetteQuantitésContent">
+                <p id="recipQuantity">1500 recettes</p>
+            </div>
+        </div>
+        <div class="keyWordContent">
+            <!-- <div class="keyWord">
+                <p>Crème de coco</p>
+                <img src="./assets/images/Vector(4).png" alt="">
+            </div> -->
+        </div>
+
+        <div class="recetteContent">
+            <!-- <div class="recetteCard">
+                <img src="./assets/images/lampos-aritonang-24gR_9lCdes-unsplash 1.png" alt="">
+                <div class="timeContent">
+                    <p>	10min</p>
+                </div>
+                <div class="recette">
+                    <h2>Limonade de Coco</h2>
+                    <h3>Recette</h3>
+                    <p>Mettre les glaçons à votre goût dans le blender, Ajouter le lait  la crème de coco, le jus de 2 citrons et le sucre ensemble. Mixer jusqu'à obtenir la consistance désirée.</p>
+                    <h3>Ingrédients</h3>
+                    <div class="ingredientContent">
+                        <div class="ingredient">
+                            <p class="ingredientName">Lait de coco</p>
+                            <p class="ingredientQuantity">400ml</p>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </main>
+    <script src="./Js/recipes.js"></script>
+    <script src="./Js/index.js"></script>
+</body>
+</html>

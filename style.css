@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    box-sizing: inherit;
+    margin: 0;
+}
+.croix{
+    display: none;
+}
+header{
+    background:url(./assets/images/lampos-aritonang-24gR_9lCdes-unsplash\ 1.png) center center/cover;
+    height: 680px;
+}
+header img{
+    height: 25px;
+    margin: 50px;
+}
+
+header h1{
+    color: #FFD15B;
+    width: 700px ;
+    margin: 150px auto 0;
+    font-size: 44px;
+    text-align: center;
+    font-weight: 400;
+    line-height: 66.24px;
+    text-transform:uppercase;
+    font-family: 'Anton', sans-serif;
+
+}
+
+.searchBar{
+    background-color: white;
+    margin: 0 auto;
+    padding:0 10px;
+    width: 60%;
+    height: 72px;
+    border-radius: 10px;
+    margin-top: 25px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.searchBar input{
+    margin-left: 25px;
+    width: 100%;
+    height: 90%;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+}
+.searchBar input::placeholder{
+    color: #7a7a7a;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Manrope', sans-serif;
+}
+.searchImageContent{
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+.searchBar img{
+    width: 50px;
+    height: 50px;
+    margin: 0;
+}
+.searchBar .deleteText{
+    height: 13px;
+    width: 13px;
+    cursor: pointer;
+}
+.searchBar .searchIconContent{
+    width: 50px;
+    height: 50px;
+    background-color:#1b1b1b ;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+main{
+    background-color: #EDEDED;
+}
+
+.filtreContent{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px 100px;
+
+    width: 80%;
+    margin: 0 auto ;
+    padding: 25px 0;
+}
+.filtreContent .filtre{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: white;
+    border-radius: 10px;
+    width: 195px;
+    height: 55px;
+    cursor: pointer;
+
+    font-size: 16px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    line-height: 21.86px;
+}
+.filtreContent .filtre .chevron{
+    height: 6px;
+}
+.searchFilter{
+    width: 80%;
+    height: 35px;
+    border-radius: 2px;
+    border: 1px solid #c6c6c6;
+    padding:0 5px;
+    margin: 0 auto;
+    margin-bottom:20px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filtreContent .filtre .searchFilter .searchIcon{
+    width: 15px;
+    height: 15px;
+}
+.searchFilter input{
+    height: 80%;
+    width: 90%;
+    border-radius: 2px;
+    border: none;
+    outline:none;
+}
+.searchFilter .searchImageContent {
+    gap:10px;
+}
+.searchFilter .searchImageContent img .croix{
+    width: 8px;
+    height: 8px;
+}
+.filterOpen {
+    display: none;
+    width: 100%;
+    height: 90%;
+    padding-bottom: 20px;
+    overflow: hidden;
+}
+.filterOpen .elementSelectContent{
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    /* display: none; */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+
+}
+.filterOpen .elementSelectContent .elementSelect {
+    display: flex;
+    align-items: center;
+    background-color:#FFD15B ;
+
+    height: 40px;
+    width: 100%;
+}
+.filterOpen .elementSelectContent .elementSelect p {
+    padding: 0 20px ;
+       
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Manrope', sans-serif ;
+}
+.filterOpen .elementList{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+    overflow-y: scroll;
+    height: 250px;
+    width: 80%;
+    margin: 0 auto;
+    scrollbar-width: none;
+
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Manrope', sans-serif ;
+}
+/* .elementList::-webkit-scrollbar{
+    display: none;
+} */
+.filtreContent .recetteQuantitésContent{
+    height: fit-content;
+    margin-left: auto;
+
+    font-family: 'Anton', sans-serif ;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 31.6px;
+}
+.filtreContent .open{
+    max-height: 350px ;
+    height: fit-content;
+
+}
+.filtreContent .topFiltre{
+    /* border: 2px solid green; */
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    min-height: 50px;
+}
+.keyWordContent{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    
+    max-width: 80%;
+    margin: 0 auto 30px;
+}
+.keyWordContent .keyWord{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 50px;
+
+    background-color: #FFD15B;
+    border-radius: 10px;
+    height: 55px;
+    padding:0 18px ;
+
+}
+.keyWordContent .keyWord p{
+
+    font-size: 16px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    line-height: 21.86px;
+}
+
+
+.recetteContent{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: min-content;
+    grid-gap: 50px;
+    height: 15000px;
+    width: 80%;
+    margin: 0 auto;
+}
+.recetteCard{
+    width: 380px;
+    height: 700px;
+    border-radius: 20px;
+    background-color: white;
+    position:relative;
+}
+.recetteCard img{
+    height: 250px;
+    width: 100%;
+    border-radius: 20px 20px 0 0 ;
+    object-fit: cover;
+}
+.recetteCard .recette{
+    width: 85%;
+    margin: 20px auto 0;
+}
+.recetteCard .recette h2{
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 27.1px;
+}
+.recetteCard .recette h3{
+    color: #7a7a7a;
+    margin: 20px 0 15px;
+    font-family: 'Manrope', sans-serif;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16.39px;
+    letter-spacing: 1px;
+}
+.recetteCard .recette p{
+    height: 75px;
+    overflow: hidden;
+    font-family: 'Manrope', sans-serif;
+    color: #1b1b1b;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19.12px;
+}
+.recetteCard .recette .ingredientContent{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.recetteCard .ingredient {
+    width: fit-content;
+}
+.recetteCard .ingredient p{
+    height: auto;
+    
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19.12px;
+}
+.recetteCard .ingredient .ingredientName{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19.12px;
+}
+.recetteCard .ingredient .ingredientQuantity{
+    color: #7a7a7a;
+
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19.12px;
+}
+
+.recetteCard .timeContent{
+    background-color: #FFD15B;
+    height: 25px;
+    width: 65px;
+    position: absolute ;
+    top: 20px;
+    border-radius: 14px;
+    left: 295px;
+}
+
+.recetteCard .timeContent p{
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    padding: 5px 15px;
+}
