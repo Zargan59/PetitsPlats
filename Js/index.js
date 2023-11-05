@@ -141,7 +141,6 @@ function mainSearch(e){
     } 
     else{
         croix.style.display = "none"
-        console.log("IC");
         allIngredient(ingredientsTab)
         displayRecip(recipes)
     }
@@ -157,12 +156,26 @@ function searchFilter(search){
         //J'efface les anciennes recette
         const recipContent = document.querySelector(".recetteContent")
         recipContent.innerHTML=""
-        // const filter = recipes.filter((recipe)=>{
-        //     return recipe.indexOf(search.value.toLowerCase()) !== -1
-        //    })
-           console.log("ICI");
-           console.log(recipes);
-        //Je compare ce que l'user à rechercher avec ce qui est présent dans le titre, la liste des ingrédients ou la description
+        //Je récupère le mot dans le titre, la description et dans les ingrédients
+        let filter = recipes.filter((recip)=>{
+            return recip.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1
+           
+        })
+        filter = recipes.filter((recip)=>{
+            return recip.description.toLowerCase().indexOf(search.value.toLowerCase()) !==-1
+        })
+        const ingredientInRecip = recipes.forEach(element => {
+            const ingredientList = element.ingredients.filter((recip)=>{
+                // console.log(element.ingredients);
+                // console.log(recip.ingredient);
+                return recip.ingredient.toLowerCase().indexOf(search.value.toLowerCase()!==1)
+            })
+        });
+        // console.log(test);
+        // console.log(filter);
+
+        
+           displayRecip(filter)
 
     }
 }
