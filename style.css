@@ -222,7 +222,7 @@ main{
     width: 100%;
     min-height: 50px;
 }
-.keyWordContent{
+.tagContent{
     display: flex;
     flex-wrap: wrap;
     gap: 25px;
@@ -230,7 +230,7 @@ main{
     max-width: 80%;
     margin: 0 auto 30px;
 }
-.keyWordContent .keyWord{
+.tagContent .tag{
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -242,14 +242,16 @@ main{
     padding:0 18px ;
 
 }
-.keyWordContent .keyWord p{
+.tagContent .tag p{
 
     font-size: 16px;
     font-family: 'Manrope', sans-serif;
     font-weight: 500;
     line-height: 21.86px;
 }
-
+.tagContent .tag img{
+    cursor: pointer;
+}
 
 .recetteContent{
     display: grid;

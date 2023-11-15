@@ -4,7 +4,7 @@ let menuIngredientOpen = false;
 const menuIngredient = document.querySelector("#ingredientFilter ");
 const ingredientsSet = new Set();
 const ingredientSelectedSet = new Set();
-const tagSet =[]
+let tagSet =[]
 
 const mainSearchBar = document.getElementById("mainSearchBar");
 const deleteText = document.querySelector(".deleteText");
@@ -112,18 +112,20 @@ function pressEnterFilter(e, closestList) {
   if (e.key === "Enter") {
     //Si le mot chercher par l'utilisateur est dans la liste alors on prend le premier mot
     const filterContent = closestList.querySelector(".elementSelectContent");
-    const firstElementSearch = document.querySelector(".elementList p").textContent;
+    const firstElement = document.querySelector(".elementList p").textContent;
     if(tagSet.find(element=> element == firstElementSearch)){
     }
     else{
-      tagSet.push(firstElementSearch)
-      addElementSelected(firstElementSearch, filterContent);
+      tagSet.push(firstElement)
+      addElementSelected(firstElement, filterContent);
     }
   }
 }
 
 function addElementSelected(input, filterContent) {
   //Je créé un tableau pour regroup tous les éléments sélectionnés
+  console.log(input);
+  console.log(filterContent);
   filterContent.style.display = "flex";
   const elementSelected = document.createElement("div");
   elementSelected.classList.add("elementSelect");
@@ -135,6 +137,7 @@ function addElementSelected(input, filterContent) {
   deleteContent.classList.add("deleteFilterContent")
   const deleteFilter = document.createElement("img")
   deleteFilter.setAttribute("src","assets/images/FilterQuit.png")
+  deleteFilter.setAttribute("alt", "Supprimer le filtre")
   elementSelected.appendChild(deleteContent)
   deleteContent.appendChild(deleteFilter)
 
@@ -145,8 +148,13 @@ function addElementSelected(input, filterContent) {
   elementSelected.addEventListener("mouseleave", () =>{
     element.style.fontWeight = 400
     deleteContent.style.display = "none"
-
   })
+  deleteContent.addEventListener("click", ()=>{
+    // tagSet = tagSet.filter(element => element !== elementSelected.childNodes[0].textContent)
+    majTagTab(elementSelected.childNodes[0].textContent)
+    elementSelected.remove()
+  } )
+  tagCreation()
 }
 
 function mainSearch(e) {
@@ -249,7 +257,6 @@ function allIngredient(Array) {
     ingredient.innerHTML = element.replace(/^./, element[0].toUpperCase());
     listContent.appendChild(ingredient);
     ingredient.addEventListener("click", (e) => {
-      console.log(e.target.textContent);
       const closestList = e.target.closest(".filterOpen");
       const filterContent = closestList.querySelector(".elementSelectContent");
       if(tagSet.find(element=> element == e.target.textContent)){
@@ -260,4 +267,38 @@ function allIngredient(Array) {
       }
     });
   });
+}
+
+tagCreation()
+
+function tagCreation(){
+  const tagContent = document.getElementById("tagContent")
+  tagContent.innerHTML = ""
+  tagSet.forEach(element => {
+    const tag = document.createElement("div")
+    tag.classList.add("tag")
+    const tagText = document.createElement("p")
+    tagText.innerHTML = element
+    const tagDelete = document.createElement("img")
+    tagDelete.setAttribute("src", "assets/images/Vector(4).png")
+    tagDelete.setAttribute("alt", "Supprimer le tag")
+
+    tag.appendChild(tagText)
+    tag.appendChild(tagDelete)
+    tagContent.appendChild(tag)
+
+    tagDelete.addEventListener("click",(e)=>{
+      // tagSet = tagSet.filter(element => element !== elementSelected.childNodes[0].textContent)
+
+      majTagTab(tagText.textContent)
+      tag.remove()
+    })
+
+  });
+
+}
+
+function majTagTab(tagDelete){
+  tagSet = tagSet.filter(element => element !== tagDelete)
+  allIngredient(tagSet)
 }
