@@ -1,9 +1,11 @@
 const allRecip = document.querySelector(".recetteContent");
 let ingredientsTab;
-let menuIngredientOpen = false;
-const menuIngredient = document.querySelector("#ingredientFilter ");
+
+
 const ingredientsSet = new Set();
 const ingredientSelectedSet = new Set();
+
+const appareilsSet = new Set()
 let tagSet =[]
 
 const mainSearchBar = document.getElementById("mainSearchBar");
@@ -18,8 +20,10 @@ function init() {
   ingredientSearch.value = "";
   displayRecip(recipes);
   ingredientsTab = Array.from(ingredientsSet);
+  appareilTab = Array.from(appareilsSet)
   allIngredient(ingredientsTab);
 }
+
 function quantityRecip(array){
  const quantity = document.getElementById("recipQuantity")
  quantity.innerHTML = `${array.length} recettes`
@@ -83,6 +87,7 @@ function displayRecip(array) {
 
       ingredientsSet.add(ingredient.ingredient.toLowerCase());
     });
+    appareilsSet.add(element.appliance.toLowerCase())
 
     recipCard.appendChild(description);
     description.appendChild(recipTitle);
@@ -93,9 +98,19 @@ function displayRecip(array) {
   });
 }
 
-document
-  .querySelector("#ingredientFilter .topFiltre")
-  .addEventListener("click", openMenuIngredient);
+const menu = document.querySelectorAll(".topFiltre")
+menu.forEach(element => {
+  element.addEventListener("click",()=>{
+    const chevron = element.children[1];
+    const IsOpen = element.parentElement;
+    const content = element.nextElementSibling
+    console.log(content);
+    openMenu(chevron, IsOpen,content)
+    console.log(element);
+  })
+});
+
+    
   
 ingredientSearch.addEventListener("input", mainSearch);
 ingredientSearch.addEventListener("keydown", (e) => {
@@ -113,7 +128,7 @@ function pressEnterFilter(e, closestList) {
     //Si le mot chercher par l'utilisateur est dans la liste alors on prend le premier mot
     const filterContent = closestList.querySelector(".elementSelectContent");
     const firstElement = document.querySelector(".elementList p").textContent;
-    if(tagSet.find(element=> element == firstElementSearch)){
+    if(tagSet.find(element=> element == firstElement)){
     }
     else{
       tagSet.push(firstElement)
@@ -124,8 +139,6 @@ function pressEnterFilter(e, closestList) {
 
 function addElementSelected(input, filterContent) {
   //Je créé un tableau pour regroup tous les éléments sélectionnés
-  console.log(input);
-  console.log(filterContent);
   filterContent.style.display = "flex";
   const elementSelected = document.createElement("div");
   elementSelected.classList.add("elementSelect");
@@ -155,6 +168,21 @@ function addElementSelected(input, filterContent) {
     elementSelected.remove()
   } )
   tagCreation()
+}
+
+function openMenu(chevron, IsOpen, content){
+  
+  if(IsOpen.classList[1] == 'open' ){
+    chevron.style.transform = "rotate(0deg)";
+    IsOpen.classList.remove("open");
+    content.style.display = "none";
+  }
+  else{
+    chevron.style.transform = "rotate(180deg)";
+    IsOpen.classList.add("open");
+    content.style.display = "block";
+  }
+
 }
 
 function mainSearch(e) {
@@ -225,21 +253,7 @@ function eraseEmptyMessage(){
   allRecip.querySelector(".emptyMessage").remove()
   allRecip.classList.remove("emptySearch")
 }
-function openMenuIngredient() {
-  const chevron = document.querySelector("#ingredientFilter img");
-  menuIngredientOpen = !menuIngredientOpen;
-  if (menuIngredientOpen === true) {
-    chevron.style.transform = "rotate(180deg)";
-    menuIngredient.classList.add("open");
-    const content = document.querySelector("#ingredientFilter .filterOpen");
-    content.style.display = "block";
-  } else {
-    chevron.style.transform = "rotate(0deg)";
-    menuIngredient.classList.remove("open");
-    const content = document.querySelector("#ingredientFilter .filterOpen");
-    content.style.display = "none";
-  }
-}
+
 
 function allIngredient(Array) {
   const listContent = document.querySelector("#ingredientFilter .elementList");
