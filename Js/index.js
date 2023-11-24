@@ -1,36 +1,34 @@
 const allRecip = document.querySelector(".recetteContent");
 let ingredientsTab;
 
-
 const ingredientsSet = new Set();
-const ingredientSelectedSet = new Set();
-
-const appareilsSet = new Set()
-let tagSet =[]
+const ustensilsSet = new Set();
+const appareilsSet = new Set();
+let tagSet = [];
 
 const mainSearchBar = document.getElementById("mainSearchBar");
 const deleteText = document.querySelector(".deleteText");
 
-const ingredientSearch = document.getElementById("ingredientSearch");
+const menuSearch = document.querySelectorAll(".searchFilter");
 
 init();
 
 function init() {
   mainSearchBar.value = "";
-  ingredientSearch.value = "";
   displayRecip(recipes);
   ingredientsTab = Array.from(ingredientsSet);
-  appareilTab = Array.from(appareilsSet)
-  allIngredient(ingredientsTab);
+  appareilTab = Array.from(appareilsSet);
+  ustensilTab = Array.from(ustensilsSet);
+  fillMenu(ingredientsSet, appareilsSet, ustensilsSet);
 }
 
-function quantityRecip(array){
- const quantity = document.getElementById("recipQuantity")
- quantity.innerHTML = `${array.length} recettes`
+function quantityRecip(array) {
+  const quantity = document.getElementById("recipQuantity");
+  quantity.innerHTML = `${array.length} recettes`;
 }
 
 function displayRecip(array) {
-  quantityRecip(array)
+  quantityRecip(array);
   array.forEach((element) => {
     //Création de la partie haute de la card
     const recipCard = document.createElement("div");
@@ -72,6 +70,7 @@ function displayRecip(array) {
       ingredientName.innerHTML = ingredient.ingredient;
       const ingredientQuantity = document.createElement("p");
       ingredientQuantity.classList.add("ingredientQuantity");
+
       if (ingredient.quantity === undefined && ingredient.unit === undefined) {
       } else if (ingredient.unit === undefined) {
         ingredientQuantity.innerHTML = `${ingredient.quantity}`;
@@ -87,7 +86,11 @@ function displayRecip(array) {
 
       ingredientsSet.add(ingredient.ingredient.toLowerCase());
     });
-    appareilsSet.add(element.appliance.toLowerCase())
+
+    element.ustensils.forEach((ustensil) => {
+      ustensilsSet.add(ustensil.toLowerCase());
+    });
+    appareilsSet.add(element.appliance.toLowerCase());
 
     recipCard.appendChild(description);
     description.appendChild(recipTitle);
@@ -97,28 +100,50 @@ function displayRecip(array) {
     description.appendChild(ingredientContent);
   });
 }
+function fillMenu(ingredientsSet, appareilsSet) {
+  const menu = document.querySelectorAll(".topFiltre");
+  menu.forEach((element) => {
+    element.addEventListener("click", () => {
+      let array = [];
+      const chevron = element.children[1];
+      const IsOpen = element.parentElement;
+      const content = element.nextElementSibling;
+      openMenu(chevron, IsOpen, content);
+      switch (IsOpen.id) {
+        case "ingredientFilter":
+          array = ingredientsTab;
+          break;
+        case "appareilFilter":
+          array = appareilTab;
+          break;
+        case "ustensileFilter":
+          array = ustensilTab;
+          break;
+        default:
+          console.log("Pas de menu ouvert reconnu");
+      }
+      // if(IsOpen.id =="ingredientFilter"){
+      //   array = ingredientsTab
+      // }
+      // else if(IsOpen.id == "appareilFilter") {
+      //   array = appareilTab
+      // }
+      const listContent = IsOpen.children[1].children[2];
+      listElementMenu(array, listContent);
+    });
+  });
+}
 
-const menu = document.querySelectorAll(".topFiltre")
-menu.forEach(element => {
-  element.addEventListener("click",()=>{
-    const chevron = element.children[1];
-    const IsOpen = element.parentElement;
-    const content = element.nextElementSibling
-    console.log(content);
-    openMenu(chevron, IsOpen,content)
-    console.log(element);
-  })
-});
-
-    
-  
-ingredientSearch.addEventListener("input", mainSearch);
-ingredientSearch.addEventListener("keydown", (e) => {
-  const closestList = e.target.closest(".filterOpen");
-  pressEnterFilter(e, closestList);
+menuSearch.forEach((menu) => {
+  menu.addEventListener("input", menusSearch);
+  menu.addEventListener("keydown", (e) => {
+    const closestList = e.target.closest(".filterOpen");
+    pressEnterFilter(e, closestList);
+  });
 });
 
 mainSearchBar.addEventListener("input", mainSearch);
+
 deleteText.addEventListener("click", () => {
   mainSearchBar.value = "";
 });
@@ -128,10 +153,9 @@ function pressEnterFilter(e, closestList) {
     //Si le mot chercher par l'utilisateur est dans la liste alors on prend le premier mot
     const filterContent = closestList.querySelector(".elementSelectContent");
     const firstElement = document.querySelector(".elementList p").textContent;
-    if(tagSet.find(element=> element == firstElement)){
-    }
-    else{
-      tagSet.push(firstElement)
+    if (tagSet.find((element) => element == firstElement)) {
+    } else {
+      tagSet.push(firstElement);
       addElementSelected(firstElement, filterContent);
     }
   }
@@ -146,125 +170,171 @@ function addElementSelected(input, filterContent) {
   element.innerHTML = input.replace(/^./, input[0].toUpperCase());
   elementSelected.appendChild(element);
   filterContent.appendChild(elementSelected);
-  const deleteContent = document.createElement("div")
-  deleteContent.classList.add("deleteFilterContent")
-  const deleteFilter = document.createElement("img")
-  deleteFilter.setAttribute("src","assets/images/FilterQuit.png")
-  deleteFilter.setAttribute("alt", "Supprimer le filtre")
-  elementSelected.appendChild(deleteContent)
-  deleteContent.appendChild(deleteFilter)
+  const deleteContent = document.createElement("div");
+  deleteContent.classList.add("deleteFilterContent");
+  const deleteFilter = document.createElement("img");
+  deleteFilter.setAttribute("src", "assets/images/FilterQuit.png");
+  deleteFilter.setAttribute("alt", "Supprimer le filtre");
+  elementSelected.appendChild(deleteContent);
+  deleteContent.appendChild(deleteFilter);
 
-  elementSelected.addEventListener("mouseenter", () =>{
-    element.style.fontWeight = 700
-    deleteContent.style.display = "flex"
-  })
-  elementSelected.addEventListener("mouseleave", () =>{
-    element.style.fontWeight = 400
-    deleteContent.style.display = "none"
-  })
-  deleteContent.addEventListener("click", ()=>{
+  elementSelected.addEventListener("mouseenter", () => {
+    element.style.fontWeight = 700;
+    deleteContent.style.display = "flex";
+  });
+  elementSelected.addEventListener("mouseleave", () => {
+    element.style.fontWeight = 400;
+    deleteContent.style.display = "none";
+  });
+  deleteContent.addEventListener("click", () => {
     // tagSet = tagSet.filter(element => element !== elementSelected.childNodes[0].textContent)
-    majTagTab(elementSelected.childNodes[0].textContent)
-    elementSelected.remove()
-  } )
-  tagCreation()
+    majTagTab(elementSelected.childNodes[0].textContent);
+    elementSelected.remove();
+  });
+  tagCreation();
 }
 
-function openMenu(chevron, IsOpen, content){
-  
-  if(IsOpen.classList[1] == 'open' ){
+function openMenu(chevron, IsOpen, content) {
+  if (IsOpen.classList[1] == "open") {
     chevron.style.transform = "rotate(0deg)";
     IsOpen.classList.remove("open");
     content.style.display = "none";
-  }
-  else{
+  } else {
     chevron.style.transform = "rotate(180deg)";
     IsOpen.classList.add("open");
     content.style.display = "block";
+    content.children[0].children[0].value = "";
   }
-
 }
 
-function mainSearch(e) {
+function mainSearch(e){
   const parent = e.target.parentElement;
   const croix = parent.querySelector(".croix");
+
   if (e.target.textLength >= 3) {
     croix.style.display = "block";
-    searchFilter(e.target);
+    searchMainBar(e.target)
+
+  }else{
+    croix.style.display = "none";
+    displayRecip(recipes);
+    eraseEmptyMessage();
+  }
+}
+
+function menusSearch(e) {
+  const parent = e.target.parentElement;
+  const croix = parent.querySelector(".croix");
+  const listContentParent = parent.closest(".filtre");
+  console.log(listContentParent);
+  //Si l'user à taper plus de 2 lettres dans la barre de recherche
+  //J'affiche la croix et je lance la recherche
+  if (e.target.textLength >= 3) {
+    croix.style.display = "block";
+    searchFilter(e.target, listContentParent);
     //S'il sagit de l'input ingrédient, j'appelle sa fonction.
     //Je regarde ce que l'user à écrit et je compare avec ce qui est présent dans le tableau
   } else {
+    let menuTab;
+    NameMenu = listContentParent.id;
+    switch (NameMenu) {
+      case "ingredientFilter":
+        menuTab = ingredientsTab;
+        break;
+      case "appareilFilter":
+        menuTab = appareilTab;
+        break;
+      case "ustensileFilter":
+        menuTab = ustensilTab;
+      default:
+        console.log("Pas de menu trouvé");
+    }
+
+    const listContent = listContentParent.querySelector(".elementList");
+    listElementMenu(menuTab, listContent);
     croix.style.display = "none";
-    allIngredient(ingredientsTab);
     displayRecip(recipes);
-    eraseEmptyMessage()
+    eraseEmptyMessage();
   }
 }
-function searchFilter(search) {
+
+function searchFilter(search, listContentParent) {
+  const listContent = listContentParent.querySelector(".elementList");
+  let menuTab;
   if (search.id != "mainSearchBar") {
-    const filter = ingredientsTab.filter((ingredient) => {
+    NameMenu = listContentParent.id;
+    switch (NameMenu) {
+      case "ingredientFilter":
+        menuTab = ingredientsTab;
+        break;
+      case "appareilFilter":
+        menuTab = appareilTab;
+        break;
+      case "ustensileFilter":
+        menuTab = ustensilTab;
+      default:
+        console.log("Pas de menu trouvé");
+    }
+
+    const filter = menuTab.filter((ingredient) => {
       return ingredient.indexOf(search.value.toLowerCase()) !== -1;
     });
-    allIngredient(filter);
-  } else {
-    //J'efface les anciennes recette
-    const recipContent = document.querySelector(".recetteContent");
-    recipContent.innerHTML = "";
-    //Je récupère le mot dans le titre, la description et dans les ingrédients
-    let filter = recipes.filter((recip) => {
-      return (
-        recip.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1
-      );
-    });
-    filter = recipes.filter((recip) => {
-      return (
-        recip.description.toLowerCase().indexOf(search.value.toLowerCase()) !==
-        -1
-      );
-    });
-    const ingredientInrecip = new Set();
-    recipes.forEach((element) => {
-      element.ingredients.filter((recip) => {
-        // console.log(recip.ingredient.toLowerCase());
-        // console.log(recip.ingredient.toLowerCase().indexOf(search.value.toLowerCase()) !=-1);
-        if (
-          recip.ingredient.toLowerCase().indexOf(search.value.toLowerCase()) !=
-          -1
-        ) {
-          return ingredientInrecip.add(element);
-          //    return filter.push(element)
-        }
-      });
-    });
+    listElementMenu(filter, listContent);
+  } 
+}
+function searchMainBar(search){
+  //J'efface les anciennes recette
+  const recipContent = document.querySelector(".recetteContent");
+  recipContent.innerHTML = "";
 
-    if (filter.length === 0) {
-      const emptyMessage = document.createElement("p");
-      emptyMessage.innerHTML = `« Aucune recette ne contient ${search.value} vous pouvez chercher «
-      tarte aux pommes », « poisson », etc.`;
-      emptyMessage.classList.add("emptyMessage")
-      allRecip.classList.add("emptySearch")
-      allRecip.appendChild(emptyMessage);
-    }
-    displayRecip(filter);
+  //Je récupère le mot dans le titre, la description et dans les ingrédients
+  let filter = recipes.filter((recip) => {
+    return (
+      recip.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1
+    );
+  });
+
+  filter = recipes.filter((recip) => {
+    return (
+      recip.description.toLowerCase().indexOf(search.value.toLowerCase()) !==
+      -1
+    );
+  });
+
+  const ingredientInrecip = new Set();
+  recipes.forEach((element) => {
+    element.ingredients.filter((recip) => {
+      if (
+        recip.ingredient.toLowerCase().indexOf(search.value.toLowerCase()) !=
+        -1
+      ) {
+        return ingredientInrecip.add(element);
+      }
+    });
+  });
+  displayRecip(filter);
+  if (filter.length === 0) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.innerHTML = `« Aucune recette ne contient ${search.value} vous pouvez chercher «
+    tarte aux pommes », « poisson », etc.`;
+    emptyMessage.classList.add("emptyMessage")
+    allRecip.classList.add("emptySearch")
+    allRecip.appendChild(emptyMessage);
   }
 }
-function eraseEmptyMessage(){
-  if(allRecip.querySelector(".emptyMessage"))
-  allRecip.querySelector(".emptyMessage").remove()
-  allRecip.classList.remove("emptySearch")
+function eraseEmptyMessage() {
+  if (allRecip.querySelector(".emptyMessage"))
+    allRecip.querySelector(".emptyMessage").remove();
+  allRecip.classList.remove("emptySearch");
 }
 
-
-function allIngredient(Array) {
-  const listContent = document.querySelector("#ingredientFilter .elementList");
+function listElementMenu(Array, listContent) {
   listContent.innerHTML = "";
-  const tab = Array.sort((a, b)=>{
-    if(a<b){
-      return -1
-    }else{
-      return 1
+  const tab = Array.sort((a, b) => {
+    if (a > b) {
+      return 1;
     }
-  })
+  });
   tab.forEach((element) => {
     const ingredient = document.createElement("p");
     //Permet de push les élements du tableau dans la page html en rajoutant une majuscule
@@ -273,46 +343,54 @@ function allIngredient(Array) {
     ingredient.addEventListener("click", (e) => {
       const closestList = e.target.closest(".filterOpen");
       const filterContent = closestList.querySelector(".elementSelectContent");
-      if(tagSet.find(element=> element == e.target.textContent)){
-      }
-      else{
-        tagSet.push(e.target.textContent)
+      if (tagSet.find((element) => element == e.target.textContent)) {
+      } else {
+        tagSet.push(e.target.textContent);
         addElementSelected(e.target.textContent, filterContent);
       }
     });
   });
 }
 
-tagCreation()
 
-function tagCreation(){
-  const tagContent = document.getElementById("tagContent")
-  tagContent.innerHTML = ""
-  tagSet.forEach(element => {
-    const tag = document.createElement("div")
-    tag.classList.add("tag")
-    const tagText = document.createElement("p")
-    tagText.innerHTML = element
-    const tagDelete = document.createElement("img")
-    tagDelete.setAttribute("src", "assets/images/Vector(4).png")
-    tagDelete.setAttribute("alt", "Supprimer le tag")
+tagCreation();
 
-    tag.appendChild(tagText)
-    tag.appendChild(tagDelete)
-    tagContent.appendChild(tag)
+function tagCreation() {
+  const tagContent = document.getElementById("tagContent");
+  tagContent.innerHTML = "";
+  tagSet.forEach((element) => {
+    const tag = document.createElement("div");
+    tag.classList.add("tag");
+    const tagText = document.createElement("p");
+    tagText.innerHTML = element;
+    const tagDelete = document.createElement("img");
+    tagDelete.setAttribute("src", "assets/images/Vector(4).png");
+    tagDelete.setAttribute("alt", "Supprimer le tag");
 
-    tagDelete.addEventListener("click",(e)=>{
+    tag.appendChild(tagText);
+    tag.appendChild(tagDelete);
+    tagContent.appendChild(tag);
+
+    tagDelete.addEventListener("click", (e) => {
       // tagSet = tagSet.filter(element => element !== elementSelected.childNodes[0].textContent)
 
-      majTagTab(tagText.textContent)
-      tag.remove()
-    })
-
+      majTagTab(tagText.textContent);
+      deleteTag(e.target.previousElementSibling.textContent);
+      tag.remove();
+    });
   });
-
 }
 
-function majTagTab(tagDelete){
-  tagSet = tagSet.filter(element => element !== tagDelete)
-  allIngredient(tagSet)
+function deleteTag(tag) {
+  const filtreTab = document.querySelectorAll(".elementSelect");
+  filtreTab.forEach((element) => {
+    if (element.firstChild.textContent == tag) {
+      element.remove();
+    }
+  });
+}
+
+function majTagTab(tagDelete) {
+  tagSet = tagSet.filter((element) => element !== tagDelete);
+  tagCreation()
 }

@@ -150,6 +150,9 @@ main{
     padding-bottom: 20px;
     overflow: hidden;
 }
+.filterOpen::-webkit-scrollbar{
+    display: none;
+}
 .filterOpen .elementSelectContent{
     display: none;
     flex-direction: column;
@@ -226,7 +229,6 @@ main{
     display: flex;
     flex-wrap: wrap;
     gap: 25px;
-    
     max-width: 80%;
     margin: 0 auto 30px;
 }
