@@ -35,7 +35,7 @@ function displayRecip(array) {
     recipCard.classList.add("recetteCard");
 
     const img = document.createElement("img");
-    img.setAttribute("src", `Plat_Photo/${element.image}`);
+    img.setAttribute("src", `../Plat_Photo/${element.image}`);
     img.setAttribute("alt", element.name);
 
     const recipTimeContent = document.createElement("div");
@@ -143,6 +143,7 @@ menuSearch.forEach((menu) => {
 });
 
 mainSearchBar.addEventListener("input", mainSearch);
+// mainSearchBar.addEventListener("input", mainSearchAlternate);
 
 deleteText.addEventListener("click", () => {
   mainSearchBar.value = "";
@@ -206,6 +207,19 @@ function openMenu(chevron, IsOpen, content) {
     content.children[0].children[0].value = "";
   }
 }
+function mainSearchAlternate(e) {
+  const parent = e.target.parentElement;
+  const croix = parent.querySelector(".croix");
+
+  if (e.target.textLength >= 3) {
+    croix.style.display = "block";
+    searchMainBarAlternate(e.target);
+  } else {
+    croix.style.display = "none";
+    displayRecip(recipes);
+    eraseEmptyMessage();
+  }
+}
 
 function mainSearch(e) {
   const parent = e.target.parentElement;
@@ -213,13 +227,9 @@ function mainSearch(e) {
 
   if (e.target.textLength >= 3) {
     croix.style.display = "block";
-    // searchMain(e.target, searchMainBar);
-    searchMain(e.target, searchMainBarAlternate);
-
+    searchMainBar(e.target);
   } else {
     croix.style.display = "none";
-    const recipContent = document.querySelector(".recetteContent");
-    recipContent.innerHTML = "";
     displayRecip(recipes);
     eraseEmptyMessage();
   }
@@ -286,15 +296,82 @@ function searchFilter(search, listContentParent) {
   }
 }
 
+function searchMainBarAlternate(search) {
+  //J'efface les anciennes recette
+  const recipContent = document.querySelector(".recetteContent");
+  recipContent.innerHTML = "";
+  let filter = new Set
 
-function searchMain(search, filterMethod) {
+ let recipFiltered = recipes.map((recette)=>{
+    return{
+      ...recette,
+      ingredientFlattened : recette.ingredients.map((ingredient)=> ingredient.ingredient).join(", "),
+    }
+  });
+  recipFiltered = recipFiltered.filter((recette)=> {
+
+   let test = recette.ingredientFlattened.toLowerCase().includes(search.value.toLowerCase())
+    if(test == true){
+      filter.add(recette)
+    }
+  })
+
+  filter = recipes.filter((recip) => {
+    return recip.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1;
+  });
+
+  filter = recipes.filter((recip) => {
+    return (
+      recip.description.toLowerCase().indexOf(search.value.toLowerCase()) !== -1
+    );
+  });
+
+
+  const searchFilter = Array.from(filter)
+
+
+displayRecip(searchFilter);
+  if (searchFilter.length === 0) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.innerHTML = `« Aucune recette ne contient ${search.value} vous pouvez chercher «
+    tarte aux pommes », « poisson », etc.`;
+    emptyMessage.classList.add("emptyMessage");
+    allRecip.classList.add("emptySearch");
+    allRecip.appendChild(emptyMessage);
+  }
+
+
+
+}
+
+function searchMainBar(search) {
+  //J'efface les anciennes recette
   const recipContent = document.querySelector(".recetteContent");
   recipContent.innerHTML = "";
 
-  const searchResult = filterMethod(search.value);
-  
-  displayRecip(searchResult);
-  if (searchResult.length === 0) {
+  //Je récupère le mot dans le titre, la description et dans les ingrédients
+  let filter = recipes.filter((recip) => {
+    return recip.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1;
+  });
+
+  filter = recipes.filter((recip) => {
+    return (
+      recip.description.toLowerCase().indexOf(search.value.toLowerCase()) !== -1
+    );
+  });
+
+  const ingredientInrecip = new Set();
+  recipes.forEach((element) => {
+    element.ingredients.filter((recip) => {
+      if (
+        recip.ingredient.toLowerCase().indexOf(search.value.toLowerCase()) != -1
+      ) {
+        return ingredientInrecip.add(element);
+      }
+    });
+  });
+  displayRecip(filter);
+  if (filter.length === 0) {
     const emptyMessage = document.createElement("p");
     emptyMessage.innerHTML = `« Aucune recette ne contient ${search.value} vous pouvez chercher «
     tarte aux pommes », « poisson », etc.`;
@@ -303,81 +380,6 @@ function searchMain(search, filterMethod) {
     allRecip.appendChild(emptyMessage);
   }
 }
-
-function searchMainBarAlternate(searchText) {
-  //Inverse le filter .map et les autres, le but est d'obtenir d'abord 
-  //les recettes filtrer dans la desc et le titre pour ensuite .map les recettes restantes
-  let filter =[];
-
-  let recipFiltered = recipes.map((recette) => {
-    return {
-      ...recette,
-      ingredientFlattened: recette.ingredients
-        .map((ingredient) => ingredient.ingredient)
-        .join(", "),
-    }});
-  
-
-  filter.push(recipFiltered.filter((recip) => {
-    return recip.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
-  })) 
-
-  filter.push(recipFiltered.filter((recip) => {
-    return (recip.description.toLowerCase().indexOf(searchText.toLowerCase()) !== -1)
-  }))
-
-  filter.push(recipFiltered.filter((recette) => {
-    return recette.ingredientFlattened
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-  })) 
-  filter = filter.flat(Infinity)
-  filter = new Set(filter)
-
-  return Array.from(filter);
-}
-
-function pushInArray(array,set){
-  array.forEach(element => {
-    set.add(element)
-  });
-  // console.log(set);
-  return set
-}
-
-function searchMainBar(searchText) {
-  let recipFiltered = new Set
-
-  //Je regarde dans toutes les recettes, quelle recette à le mot dans son nom.
-  let filter = recipes.filter((recip) => {
-    return recip.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
-  });
-  pushInArray(filter, recipFiltered)
-
-  filter = recipes.filter((recip) => {
-    return (
-      recip.description.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-    );
-  });
-  pushInArray(filter, recipFiltered)
-
-
-
-  recipes.forEach((element) => {
-    element.ingredients.forEach((recip) => {
-      if (
-        recip.ingredient.toLowerCase().indexOf(searchText.toLowerCase()) != -1
-      ) {
-        return filter.push(element);
-      }
-    });
-  });
-  pushInArray(filter, recipFiltered)
-
-  return Array.from(recipFiltered);
-}
-
-
 function eraseEmptyMessage() {
   if (allRecip.querySelector(".emptyMessage"))
     allRecip.querySelector(".emptyMessage").remove();

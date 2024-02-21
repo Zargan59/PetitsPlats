@@ -260,7 +260,7 @@ main{
     grid-template-columns: repeat(3,1fr);
     grid-template-rows: min-content;
     grid-gap: 50px;
-    height: 15000px;
+    height: fit-content;
     width: 80%;
     margin: 0 auto;
 }
