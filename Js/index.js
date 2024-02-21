@@ -35,7 +35,7 @@ function displayRecip(array) {
     recipCard.classList.add("recetteCard");
 
     const img = document.createElement("img");
-    img.setAttribute("src", `Plat_Photo/${element.image}`);
+    img.setAttribute("src", `./Plat_Photo/${element.image}`);
     img.setAttribute("alt", element.name);
 
     const recipTimeContent = document.createElement("div");
