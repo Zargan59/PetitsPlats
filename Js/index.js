@@ -122,12 +122,6 @@ function fillMenu(ingredientsSet, appareilsSet) {
         default:
           console.log("Pas de menu ouvert reconnu");
       }
-      // if(IsOpen.id =="ingredientFilter"){
-      //   array = ingredientsTab
-      // }
-      // else if(IsOpen.id == "appareilFilter") {
-      //   array = appareilTab
-      // }
       const listContent = IsOpen.children[1].children[2];
       listElementMenu(array, listContent);
     });
@@ -187,7 +181,6 @@ function addElementSelected(input, filterContent) {
     deleteContent.style.display = "none";
   });
   deleteContent.addEventListener("click", () => {
-    // tagSet = tagSet.filter(element => element !== elementSelected.childNodes[0].textContent)
     majTagTab(elementSelected.childNodes[0].textContent);
     elementSelected.remove();
   });
@@ -215,7 +208,6 @@ function mainSearch(e) {
     croix.style.display = "block";
     // searchMain(e.target, searchMainBar);
     searchMain(e.target, searchMainBarAlternate);
-
   } else {
     croix.style.display = "none";
     const recipContent = document.querySelector(".recetteContent");
@@ -229,7 +221,6 @@ function menusSearch(e) {
   const parent = e.target.parentElement;
   const croix = parent.querySelector(".croix");
   const listContentParent = parent.closest(".filtre");
-  console.log(listContentParent);
   //Si l'user à taper plus de 2 lettres dans la barre de recherche
   //J'affiche la croix et je lance la recherche
   if (e.target.textLength >= 3) {
@@ -286,13 +277,12 @@ function searchFilter(search, listContentParent) {
   }
 }
 
-
 function searchMain(search, filterMethod) {
   const recipContent = document.querySelector(".recetteContent");
   recipContent.innerHTML = "";
 
-  const searchResult = filterMethod(search.value);
-  
+  const searchResult = filterMethod(search.value, recipes);
+
   displayRecip(searchResult);
   if (searchResult.length === 0) {
     const emptyMessage = document.createElement("p");
@@ -303,65 +293,104 @@ function searchMain(search, filterMethod) {
     allRecip.appendChild(emptyMessage);
   }
 }
+function searchWithFilter(filterMethod) {
+  const recipContent = document.querySelector(".recetteContent");
+  recipContent.innerHTML = "";
+  //Besoin de créer une boucle pour chaque tag de la liste
+  const search = document.querySelectorAll(".tag");
+  let searchResult;
+  if(search.length == 0){
+    const recipContent = document.querySelector(".recetteContent");
+    recipContent.innerHTML = "";
+    displayRecip(recipes);
+    eraseEmptyMessage();
 
-function searchMainBarAlternate(searchText) {
-  //Inverse le filter .map et les autres, le but est d'obtenir d'abord 
+  }
+  else{
+    eraseEmptyMessage();
+    searchResult = filterMethod(search[0].firstChild.textContent, recipes);
+  
+    //Je filtre mais à partir des résultats précédent et non plus à partir de toutes les recettes
+    if (search.length > 1) {
+      search.forEach((element) => {
+      searchResult = filterMethod(element.textContent, searchResult);
+      });
+    }
+    displayRecip(searchResult);
+    if (searchResult.length === 0) {
+      const emptyMessage = document.createElement("p");
+      emptyMessage.innerHTML = `« Aucune recette ne contient ${search.value} vous pouvez chercher «
+      tarte aux pommes », « poisson », etc.`;
+      emptyMessage.classList.add("emptyMessage");
+      allRecip.classList.add("emptySearch");
+      allRecip.appendChild(emptyMessage);
+    }
+  }
+
+}
+
+function searchMainBarAlternate(searchText, array) {
+  //Inverse le filter .map et les autres, le but est d'obtenir d'abord
   //les recettes filtrer dans la desc et le titre pour ensuite .map les recettes restantes
-  let filter =[];
-
-  let recipFiltered = recipes.map((recette) => {
+  let filter = [];
+  let recipFiltered = array.map((recette) => {
     return {
       ...recette,
       ingredientFlattened: recette.ingredients
         .map((ingredient) => ingredient.ingredient)
         .join(", "),
-    }});
-  
+    };
+  });
 
-  filter.push(recipFiltered.filter((recip) => {
-    return recip.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
-  })) 
+  filter.push(
+    recipFiltered.filter((recip) => {
+      return recip.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
+    })
+  );
 
-  filter.push(recipFiltered.filter((recip) => {
-    return (recip.description.toLowerCase().indexOf(searchText.toLowerCase()) !== -1)
-  }))
+  filter.push(
+    recipFiltered.filter((recip) => {
+      return (
+        recip.description.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+      );
+    })
+  );
 
-  filter.push(recipFiltered.filter((recette) => {
-    return recette.ingredientFlattened
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
-  })) 
-  filter = filter.flat(Infinity)
-  filter = new Set(filter)
+  filter.push(
+    recipFiltered.filter((recette) => {
+      return recette.ingredientFlattened
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
+    })
+  );
+  filter = filter.flat(Infinity);
+  filter = new Set(filter);
 
   return Array.from(filter);
 }
 
-function pushInArray(array,set){
-  array.forEach(element => {
-    set.add(element)
+function pushInArray(array, set) {
+  array.forEach((element) => {
+    set.add(element);
   });
-  // console.log(set);
-  return set
+  return set;
 }
 
 function searchMainBar(searchText) {
-  let recipFiltered = new Set
+  let recipFiltered = new Set();
 
   //Je regarde dans toutes les recettes, quelle recette à le mot dans son nom.
   let filter = recipes.filter((recip) => {
     return recip.name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
   });
-  pushInArray(filter, recipFiltered)
+  pushInArray(filter, recipFiltered);
 
   filter = recipes.filter((recip) => {
     return (
       recip.description.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
     );
   });
-  pushInArray(filter, recipFiltered)
-
-
+  pushInArray(filter, recipFiltered);
 
   recipes.forEach((element) => {
     element.ingredients.forEach((recip) => {
@@ -372,11 +401,10 @@ function searchMainBar(searchText) {
       }
     });
   });
-  pushInArray(filter, recipFiltered)
+  pushInArray(filter, recipFiltered);
 
   return Array.from(recipFiltered);
 }
-
 
 function eraseEmptyMessage() {
   if (allRecip.querySelector(".emptyMessage"))
@@ -404,6 +432,7 @@ function listElementMenu(Array, listContent) {
         tagSet.push(e.target.textContent);
         addElementSelected(e.target.textContent, filterContent);
       }
+      searchWithFilter(searchMainBarAlternate);
     });
   });
 }
@@ -427,7 +456,6 @@ function tagCreation() {
     tagContent.appendChild(tag);
 
     tagDelete.addEventListener("click", (e) => {
-      // tagSet = tagSet.filter(element => element !== elementSelected.childNodes[0].textContent)
 
       majTagTab(tagText.textContent);
       deleteTag(e.target.previousElementSibling.textContent);
@@ -442,10 +470,12 @@ function deleteTag(tag) {
     if (element.firstChild.textContent == tag) {
       element.remove();
     }
+   
   });
 }
 
 function majTagTab(tagDelete) {
   tagSet = tagSet.filter((element) => element !== tagDelete);
   tagCreation();
+  searchWithFilter(searchMainBarAlternate)
 }
